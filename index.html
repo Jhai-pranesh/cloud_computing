@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Simple Tech Chatbot</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #0f172a;
+      color: #f1f5f9;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+    .chatbox {
+      width: 90%;
+      max-width: 600px;
+      background-color: #1e293b;
+      border-radius: 10px;
+      display: flex;
+      flex-direction: column;
+      height: 70vh;
+      overflow: hidden;
+    }
+    .messages {
+      flex: 1;
+      padding: 10px;
+      overflow-y: auto;
+    }
+    .message {
+      margin: 8px 0;
+      padding: 10px;
+      border-radius: 8px;
+      max-width: 80%;
+      line-height: 1.4;
+    }
+    .user {
+      align-self: flex-end;
+      background-color: #2563eb;
+      color: white;
+    }
+    .bot {
+      align-self: flex-start;
+      background-color: #334155;
+      color: #e2e8f0;
+    }
+    .input-area {
+      display: flex;
+      border-top: 1px solid #475569;
+    }
+    input {
+      flex: 1;
+      padding: 10px;
+      background: none;
+      border: none;
+      color: #f8fafc;
+      outline: none;
+      font-size: 16px;
+    }
+    button {
+      padding: 10px 16px;
+      border: none;
+      background-color: #2563eb;
+      color: white;
+      cursor: pointer;
+      font-size: 16px;
+    }
+  </style>
+</head>
+<body>
+  <div class="chatbox">
+    <div class="messages" id="chat"></div>
+    <div class="input-area">
+      <input id="userInput" type="text" placeholder="Ask a question...">
+      <button id="sendBtn">Send</button>
+    </div>
+  </div>
+
+  <script>
+    const qaDB = [
+      {q : "Hi", a : "Hi! How are you? How may i help you?"},
+      {q : "git", a : "Git is a version control tool and it is used in a collabarative environment"},
+      {q : "ml" , a : "Machine Learning is to make the machine understand the complicated patterns in the data and make it answer the questions bsed on the data"},
+      {q : "docker", a : "Docker is a containerization tool used to make projects or the modules of the projects to be portable and it is mainly used in higher level projects"}
+    ];
+
+    const chat = document.getElementById('chat');
+    const input = document.getElementById('userInput');
+    const sendBtn = document.getElementById('sendBtn');
+
+    sendBtn.addEventListener('click', sendMessage);
+    input.addEventListener('keydown', e => { if(e.key === 'Enter') sendMessage(); });
+
+    function addMessage(text, sender) {
+      const div = document.createElement('div');
+      div.classList.add('message', sender);
+      div.textContent = text;
+      chat.appendChild(div);
+      chat.scrollTop = chat.scrollHeight;
+    }
+
+    function sendMessage() {
+      const text = input.value.trim();
+      if (!text) return;
+      addMessage(text, 'user');
+      input.value = '';
+      const reply = getAnswer(text);
+      setTimeout(() => addMessage(reply, 'bot'), 300);
+    }
+
+    function getAnswer(userText) {
+      const txt = userText.toLowerCase();
+      for (let {q, a} of qaDB) {
+        if (txt.includes(q)) return a;
+      }
+      return "I'm not sure about that. Try asking another tech or general question!";
+    }
+
+    addMessage("Hi! I'm a simple tech chatbot. Ask me something like 'what is docker?' or just say 'hi'.", 'bot');
+  </script>
+</body>
+</html>
